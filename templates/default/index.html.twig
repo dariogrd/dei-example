@@ -8,6 +8,7 @@
 
     <div class="example-wrapper">
         <h1>Hello {{ controller_name }}! ✅</h1>
+        {% if app.user %}<p>Prijavljen korisnik: {{ app.user.name }}</p>{% endif %}
 
         This friendly message is coming from:
         <ul>
