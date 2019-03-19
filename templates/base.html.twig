@@ -3,14 +3,26 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
-        <title>DEI Example</title>
+        <title>DEI Issue Tracking</title>
         {% block stylesheets %}
             <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+        <div id="app">
+            <v-app>
+                <v-navigation-drawer v-model="drawer" :clipped="$vuetify.breakpoint.lgAndUp" fixed app>{% include 'navigation.html.twig' %}</v-navigation-drawer>
+                <v-toolbar :clipped-left="$vuetify.breakpoint.lgAndUp" color="blue darken-3" dark app fixed>{% include 'toolbar.html.twig' %}</v-toolbar>
+                <v-content>
+                    <v-container fluid fill-height>
+                        <v-layout row wrap>
+                            {% block body %}{% endblock %}
+                        </v-layout>
+                    </v-container>
+                </v-content>
+            </v-app>
+        </div>
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
         {% endblock %}

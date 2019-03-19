@@ -11,6 +11,18 @@
 // Need jQuery? Install it with "yarn add jquery", then uncomment to require it.
 // const $ = require('jquery');
 
+import 'vuetify/dist/vuetify.css';
+import '@mdi/font/css/materialdesignicons.css';
 import '../sass/app.scss';
 
-console.log('Hello Webpack Encore! Edit me in assets/js/app.js');
+import Vue from 'vue';
+import Vuetify from 'vuetify';
+
+Vue.use(Vuetify);
+
+const app = new Vue({
+    el: '#app',
+    data: {
+        drawer: null,
+    },
+});

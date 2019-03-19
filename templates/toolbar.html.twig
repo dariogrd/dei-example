@@ -1,0 +1,18 @@
+<v-toolbar-title style="width: 300px" class="ml-0 pl-3">
+    <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+    <span class="hidden-sm-and-down">DEI Issue Tracking</span>
+</v-toolbar-title>
+<v-spacer></v-spacer>
+<v-btn icon><v-icon>apps</v-icon></v-btn>
+<v-btn icon><v-icon>notifications</v-icon></v-btn>
+<v-btn icon large>
+    {% if app.user %}
+        <a href="{{ path('logout') }}">
+            <v-avatar color="teal">
+                <span class="white--text headline">{{ app.user.name|first|upper }}</span>
+            </v-avatar>
+        </a>
+    {% else %}
+        <v-btn icon href="{{ path('app_login') }}"><v-icon>mdi-login</v-icon></v-btn>
+    {% endif %}
+</v-btn>
