@@ -1,3 +1,74 @@
 body {
   background-color: lightgray;
 }
+
+$table-border-color: rgba(0,0,0,.12) !default;
+$table-striped-color: rgba(242, 242, 242, 0.5) !default;
+
+table.table, .table th, .table td {
+  border: none;
+}
+
+table.table {
+  width:100%;
+  display: table;
+  border-collapse: collapse;
+  border-spacing: 0;
+
+  &.striped {
+    tr {
+      border-bottom: none;
+    }
+
+    > tbody {
+      > tr:nth-child(odd) {
+        background-color: $table-striped-color;
+      }
+
+      > tr > td {
+        border-radius: 0;
+      }
+    }
+  }
+
+  &.highlight > tbody > tr {
+    transition: background-color .25s ease;
+    &:hover {
+      background-color: $table-striped-color;
+    }
+  }
+
+  &.centered {
+    thead tr th, tbody tr td {
+      text-align: center;
+    }
+  }
+
+  &.vertical-borders {
+    border: 1px solid $table-border-color;
+    thead tr th, tbody tr td {
+      border-right: 1px solid $table-border-color;
+    }
+  }
+
+  tr {
+    border-bottom: 1px solid $table-border-color;
+  }
+
+  td, th{
+    padding: 15px 5px;
+    display: table-cell;
+    text-align: left;
+    vertical-align: middle;
+    border-radius: 2px;
+  }
+}
+
+
+.table-responsive {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+}

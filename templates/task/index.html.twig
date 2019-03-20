@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <v-flex xs12>
+        <v-card>
+            <v-card-title class="grey darken-2 white--text">
+                <span class="headline">Zadaci</span>
+                <v-spacer></v-spacer>
+                <v-tooltip bottom color="teal">
+                    <template v-slot:activator="{ on }">
+                        <v-btn icon v-on="on" dark><v-icon dark>mdi-playlist-plus</v-icon></v-btn>
+                    </template>
+                    <span>Novi zadatak</span>
+                </v-tooltip>
+            </v-card-title>
+            <v-card-text>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Naslov</th>
+                            <th>Vrsta</th>
+                            <th>Projekt</th>
+                            <th>Status</th>
+                            <th>Rok</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for task in tasks %}
+                            <tr>
+                                <td>{{ task.title }}</td>
+                                <td><v-icon>{{ task.type.icon }}</v-icon> {{ task.type }}</td>
+                                <td>{{ task.project }}</td>
+                                <td>
+                                    {% if task.status == constant('STATUS_TO_DO', task) %}
+                                        <v-chip color="blue" text-color="white">odraditi</v-chip>
+                                    {% elseif task.status == constant('STATUS_IN_PROGRESS', task) %}
+                                        <v-chip color="orange" text-color="white">u postupku</v-chip>
+                                    {% elseif task.status == constant('STATUS_IN_REVIEW', task) %}
+                                        <v-chip color="orange darken-4" text-color="white">u pregledu</v-chip>
+                                    {% elseif task.status == constant('STATUS_DONE', task) %}
+                                        <v-chip color="green" text-color="white">završeno</v-chip>
+                                    {% endif %}
+                                </td>
+                                <td>{{ task.dueDate ? task.dueDate|date('d.m.Y.') : '' }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </v-card-text>
+        </v-card>
+    </v-flex>
+{% endblock %}
