@@ -28,11 +28,47 @@
                     <div>{{ task.project.name }}</div>
                 </v-flex>
                 <v-flex xs12 md3>
-                    <div class="caption grey--text">Dodjeljen</div>
+                    <div class="caption grey--text">Dodijeljen</div>
                     <div>{{ task.assignee.name }}</div>
                 </v-flex>
             </v-layout>
         </v-card>
+        <div class="text-xs-right">
+            <v-btn fab small dark color="teal" @click.stop="dialog.show = true"><v-icon dark>add</v-icon></v-btn>
+        </div>
+        <v-dialog v-model="dialog.show" persistent max-width="600px">
+            <v-card>
+                <v-card-title>
+                    <span class="headline">Novi zadatak</span>
+                </v-card-title>
+                <v-card-text>
+                    <v-container grid-list-md>
+                        <v-layout wrap>
+                            <v-flex xs12 sm6><v-combobox v-model="dialog.form.project" :items="projects" label="Projekt *"></v-combobox></v-flex>
+                            <v-flex xs12 sm6><v-combobox v-model="dialog.form.type" :items="types" label="Vrsta *"></v-combobox></v-flex>
+                            <v-flex xs12><v-text-field v-model="dialog.form.title" label="Naslov zadatka *" required></v-text-field></v-flex>
+                            <v-flex xs12 sm6><v-combobox v-model="dialog.form.assignee" :items="users" label="Dodijeljen *"></v-combobox></v-flex>
+                            <v-flex xs12 sm6>
+                                <v-menu v-model="dialog.form.dueDateMenu" :close-on-content-click="false" :nudge-right="40" lazy transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
+                                    <template v-slot:activator="{ on }">
+                                        <v-text-field v-model="computedDueDateFormatted" label="Rok" hint="DD.MM.YYYY. format" persistent-hint prepend-icon="event" readonly v-on="on"></v-text-field>
+                                    </template>
+                                    <v-date-picker v-model="dialog.form.dueDate" no-title @input="dialog.form.dueDateMenu = false"></v-date-picker>
+                                </v-menu>
+                            </v-flex>
+                            <v-flex xs12>
+                                <v-textarea v-model="dialog.form.description" label="Opis zadatka"></v-textarea>
+                            </v-flex>
+                        </v-layout>
+                    </v-container>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" flat @click="dialog.show = false">Zatvori</v-btn>
+                    <v-btn color="blue darken-1" flat @click="saveTask" :loading="dialog.form.saveLoading">Spremi</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-flex>
 </template>
 
@@ -46,6 +82,8 @@
                 allTasks: null,
                 filteredTasks: null,
                 projects: [],
+                types: [],
+                users: [],
                 project: null,
                 status: [
                     {id: 0, color: '#aaaaaa', text: 'svi'},
@@ -54,6 +92,24 @@
                     {id: 3, color: '#d17300', text: 'u pregledu'},
                     {id: 4, color: '#09a80d', text: 'završeno'},
                 ],
+                dialog: {
+                    show: false,
+                    form: {
+                        project: null,
+                        type: null,
+                        title: null,
+                        assignee: null,
+                        dueDateMenu: false,
+                        dueDate: null,
+                        description: null,
+                        saveLoading: false,
+                    }
+                }
+            }
+        },
+        computed: {
+            computedDueDateFormatted () {
+                return this.formatDueDate(this.dialog.form.dueDate);
             }
         },
         props: {
@@ -62,6 +118,18 @@
                 required: true,
             },
             projectUrl: {
+                type: String,
+                required: true,
+            },
+            typeUrl: {
+                type: String,
+                required: true,
+            },
+            usersUrl: {
+                type: String,
+                required: true,
+            },
+            newTaskUrl: {
                 type: String,
                 required: true,
             }
@@ -74,6 +142,11 @@
                 } else {
                     return '';
                 }
+            },
+            formatDueDate(date) {
+                if (!date) return null;
+                const [year, month, day] = date.split('-');
+                return `${day}.${month}.${year}.`;
             },
             filterByStatus(status) {
                 if(status !== 0) {
@@ -89,6 +162,23 @@
                     this.filteredTasks = this.allTasks;
                 }
             },
+            saveTask() {
+                this.dialog.form.saveLoading = true;
+                let bodyFormData = new FormData();
+                bodyFormData.set('project', this.dialog.form.project.value);
+                bodyFormData.set('type', this.dialog.form.type.value);
+                bodyFormData.set('title', this.dialog.form.title);
+                bodyFormData.set('assignee', this.dialog.form.assignee.value);
+                if(this.dialog.form.dueDate) bodyFormData.set('dueDate', this.dialog.form.dueDate);
+                if(this.dialog.form.description) bodyFormData.set('description', this.dialog.form.description);
+                axios.post(this.newTaskUrl, bodyFormData)
+                    .then(response => {
+                        this.allTasks.push(response.data);
+                        this.filteredTasks = this.allTasks;
+                        this.dialog.form.saveLoading = false;
+                        this.dialog.show = false;
+                });
+            },
         },
         created() {
             this.allTasks = JSON.parse(this.tasksJson);
@@ -97,6 +187,18 @@
                 .then(response => {
                     response.data.forEach(el => {
                         this.projects.push({'value': el.id, 'text': el.name});
+                    });
+            });
+            axios.get(this.typeUrl)
+                .then(response => {
+                    response.data.forEach(el => {
+                        this.types.push({'value': el.id, 'text': el.name});
+                    });
+            });
+            axios.get(this.usersUrl)
+                .then(response => {
+                    response.data.forEach(el => {
+                        this.users.push({'value': el.id, 'text': el.name});
                     });
             });
         }

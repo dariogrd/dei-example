@@ -138,7 +138,7 @@ class Task
         return $this->dueDate;
     }
 
-    public function setDueDate(\DateTime $dueDate): void
+    public function setDueDate(?\DateTime $dueDate): void
     {
         $this->dueDate = $dueDate;
     }
@@ -158,7 +158,7 @@ class Task
         return $this->description;
     }
 
-    public function setDescription(string $description): void
+    public function setDescription(?string $description): void
     {
         $this->description = $description;
     }

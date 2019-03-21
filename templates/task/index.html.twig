@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <tasks tasks-json="{{ tasksJson }}" project-url="{{ path('project_all') }}"></tasks>
+    <tasks tasks-json="{{ tasksJson }}" project-url="{{ path('project_all') }}" type-url="{{ path('task_type_all') }}" users-url="{{ path('user_all') }}" new-task-url="{{ path('task_new') }}"></tasks>
 
     <v-flex xs12>
         <v-card>
