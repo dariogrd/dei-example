@@ -17,6 +17,7 @@ import '../sass/app.scss';
 
 import Vue from 'vue';
 import Vuetify from 'vuetify';
+import Tasks from './components/Tasks';
 
 Vue.use(Vuetify);
 
@@ -25,4 +26,7 @@ const app = new Vue({
     data: {
         drawer: null,
     },
+    components: {
+        Tasks
+    }
 });

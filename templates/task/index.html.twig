@@ -1,6 +1,8 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    <tasks tasks-json="{{ tasksJson }}" project-url="{{ path('project_all') }}"></tasks>
+
     <v-flex xs12>
         <v-card>
             <v-card-title class="grey darken-2 white--text">
